@@ -22,7 +22,7 @@ option(SUPPORT_MOD_MODPLUG "Support loading MOD music via modplug" OFF)
 option(SUPPORT_MID_TIMIDITY "Support loading MIDI music via TiMidity" OFF)
 
 list(APPEND CMAKE_PREFIX_PATH "C:/lib/SDL2")
-include_directories(${SDL2_INCLUDE_DIR})
+include_directories(${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 
 option(BUILD_SHARED_LIBS "Enable shared library" ON)
 
@@ -34,9 +34,11 @@ if (NOT ANDROID AND NOT (TARGET SDL2 OR TARGET SDL2-static))
 	    add_library(SDL2::SDL2 INTERFACE IMPORTED)
 
 		IF (WIN32)
+			string(STRIP "${SDL2_INCLUDE_DIRS} ${SDL2_INCLUDE_DIR}" SDL2_INC)
+			string(STRIP "${SDL2_LIBRARIES} ${SDL2_LIBRARY}" SDL2_LL)
 			message(STATUS "Include dirs:${SDL2_LIBRARIES} ${SDL2_LIBRARY}")
 			set_target_properties(SDL2::SDL2 PROPERTIES
-				INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIRS}"
+				INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INC}"
 				INTERFACE_LINK_LIBRARIES "${SDL2_LL}"
 			)
 		ELSE() # I am keeping this because I have not tested the code above on other platforms. The code below works fine everywhere except on Windows
