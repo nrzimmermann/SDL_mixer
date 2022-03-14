@@ -1,4 +1,9 @@
+# Fork readme
+Fork of SDL2_mixer. I have made a few changes in the source code to allow changing the volume of fading sounds.
+Since this modification on the patch branch might not be merged into SDL_mixer, I will continue to use the main branch of this repository, which contains
+the modifications as well as this readme and a few tweaks to the CMake script, for my projects.
 
+# Original readme
 SDL_mixer 2.0
 
 The latest version of this library is available from:
