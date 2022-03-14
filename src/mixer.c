@@ -294,7 +294,7 @@ mix_channels(void *udata, Uint8 *stream, int len)
                         Mix_Volume(i, (mix_channel[i].fade_volume * (mix_channel[i].fade_length-ticks))
                                    / mix_channel[i].fade_length);
                     } else {
-                        Mix_Volume(i, (mix_channel[i].fade_volume * ticks) / mix_channel[i].fade_length);
+                        mix_channel[i].volume = (mix_channel[i].fade_volume * ticks) / mix_channel[i].fade_length;
                     }
                 }
             }
@@ -1091,7 +1091,14 @@ int Mix_Volume(int which, int volume)
             if (volume > MIX_MAX_VOLUME) {
                 volume = MIX_MAX_VOLUME;
             }
-            mix_channel[which].volume = volume;
+
+            if (mix_channel[which].fading != MIX_NO_FADING)
+            {
+                mix_channel[which].fade_volume = volume;
+                mix_channel[which].fade_volume_reset = volume;
+            }
+            else
+                mix_channel[which].volume = volume;
         }
     }
     return(prev_volume);
