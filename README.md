@@ -3,6 +3,13 @@ Fork of SDL2_mixer. I have made a few changes in the source code to allow changi
 Since this modification on the patch branch might not be merged into SDL_mixer, I will continue to use the main branch of this repository, which contains
 the modifications as well as this readme and a few tweaks to the CMake script, for my projects.
 
+Main modifications to the CMake script:
+- On Windows: Look for SDL2 in `C:/lib/`
+- Compile with OGG support by default
+- Fixed leading whitespace in SDL .lib paths
+- Added `FindSDL2.cmake` (see `cmake/FindSDL2.cmake` for license)
+
+
 # Original readme
 SDL_mixer 2.0
 
