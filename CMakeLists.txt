@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(SDL2_mixer C)
 
+# This CMake script differs from the script in the original SDL_mixer repository.
+
 # FIXME: CMAKE SUPPORT IN SDL2_mixer IS VERY INCOMPLETE YET !!!
 #
 # FIXME: make it able build against system codec libraries, too.
@@ -10,12 +12,17 @@ project(SDL2_mixer C)
 # FIXME: missing CMakeLists.txt for MPG123
 set(SUPPORT_MP3_MPG123 OFF CACHE BOOL "" FORCE)
 
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
 option(SUPPORT_WAV "Support loading WAVE music" ON)
 option(SUPPORT_FLAC "Support loading FLAC music with libFLAC" OFF)
-option(SUPPORT_OGG "Support loading OGG Vorbis music via Tremor" OFF)
+option(SUPPORT_OGG "Support loading OGG Vorbis music via Tremor" ON)
 option(SUPPORT_MP3_MPG123 "Support loading MP3 music via MPG123" OFF)
 option(SUPPORT_MOD_MODPLUG "Support loading MOD music via modplug" OFF)
 option(SUPPORT_MID_TIMIDITY "Support loading MIDI music via TiMidity" OFF)
+
+list(APPEND CMAKE_PREFIX_PATH "C:/lib/SDL2")
+include_directories(${SDL2_INCLUDE_DIR})
 
 option(BUILD_SHARED_LIBS "Enable shared library" ON)
 
@@ -25,10 +32,20 @@ if (NOT ANDROID AND NOT (TARGET SDL2 OR TARGET SDL2-static))
 	if(NOT TARGET SDL2::SDL2)
 	    # SDL < 2.0.12
 	    add_library(SDL2::SDL2 INTERFACE IMPORTED)
-        set_target_properties(SDL2::SDL2 PROPERTIES
-            INTERFACE_INCLUDE_DIRECTORIES ${SDL2_INCLUDE_DIRS} ${SDL2_INCLUDE_DIR}
-            INTERFACE_LINK_LIBRARIES ${SDL2_LIBRARIES} ${SDL2_LIBRARY}
-        )
+
+		IF (WIN32)
+			message(STATUS "Include dirs:${SDL2_LIBRARIES} ${SDL2_LIBRARY}")
+			set_target_properties(SDL2::SDL2 PROPERTIES
+				INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIRS}"
+				INTERFACE_LINK_LIBRARIES "${SDL2_LL}"
+			)
+		ELSE() # I am keeping this because I have not tested the code above on other platforms. The code below works fine everywhere except on Windows
+		  	add_library(SDL2::SDL2 INTERFACE IMPORTED)
+			set_target_properties(SDL2::SDL2 PROPERTIES
+				INTERFACE_INCLUDE_DIRECTORIES ${SDL2_INCLUDE_DIRS} ${SDL2_INCLUDE_DIR}
+				INTERFACE_LINK_LIBRARIES ${SDL2_LIBRARIES} ${SDL2_LIBRARY}
+			)
+		ENDIF()
 	endif()
 endif()
 
